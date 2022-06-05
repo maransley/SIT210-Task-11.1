@@ -1,1 +1,56 @@
-Insert code here
+int inputPin = D2;
+int motionLevel = LOW;
+int val = 0;
+int buttonPin = D4;
+int buttonPressed = 0;
+
+#define DELAY_TIME 300
+ 
+
+void setup() 
+{
+    pinMode(inputPin, INPUT); 
+    pinMode(buttonPin, INPUT);
+    
+}
+void getMotion()
+{
+        val = digitalRead(inputPin);
+
+    
+        if (val == HIGH) 
+        {
+            if (motionLevel == LOW) 
+            {
+              Particle.publish("ParticleMotion", "Motion Detected", PRIVATE);
+              motionLevel = HIGH;
+            }
+    
+        } 
+        else 
+        {
+            if (motionLevel == HIGH) 
+            {
+                Particle.publish("ParticleMotion", "Off", PRIVATE);
+                motionLevel = LOW;
+            }
+        }
+      
+}
+void checkButton()
+{
+    buttonPressed = digitalRead(buttonPin);
+    if(buttonPressed == HIGH)
+    {
+        Particle.publish("ParticleMotion", "Pushed Button", PRIVATE);
+        delay(DELAY_TIME);
+    }
+   
+}
+void loop() 
+
+{
+    checkButton();
+    getMotion();
+    
+}
